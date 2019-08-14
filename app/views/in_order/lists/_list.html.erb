@@ -1,0 +1,16 @@
+
+  <ol data-controller="list"
+      data-action="dragstart->list#dragstart
+                   dragover->list#dragover
+                   dragenter->list#dragenter
+                   drop->list#drop
+                   dragend->list#dragend">
+    <% @elements.each do |element| %>
+     <li draggable="true" data-element-id="<%= element.id %>">
+        <%= element.subject %>
+     </li>
+    <% end %>
+  </ol>
+
+<div id='messages'></div>
+

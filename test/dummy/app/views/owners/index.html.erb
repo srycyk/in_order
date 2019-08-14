@@ -1,0 +1,33 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Owners</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th colspan="5"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @owners.each do |owner| %>
+      <% owner_params = { owner_id: owner, owner_type: 'Owner' } %>
+      <tr>
+        <td><%= owner.name %></td>
+        <td><%= link_to 'Show', owner %></td>
+        <td><%= link_to 'Edit', edit_owner_path(owner) %></td>
+        <td><%= link_to 'Destroy', owner, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'List', in_order.lists_path(list: owner_params) %></td>
+        <td><%= link_to 'Edit list', [ owner, :elements ] %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Owner', new_owner_path %>
+<br>
+<%= link_to 'Subjects', subjects_path %>
+

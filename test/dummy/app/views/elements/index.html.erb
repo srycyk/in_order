@@ -1,0 +1,42 @@
+
+<p id="notice"><%= notice %></p>
+
+<h1>List for <%= @owner %></h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Subject name</th>
+      <th colspan="1"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @subjects.each do |subject| %>
+      <% element = @elements.find {|element| element.subject == subject } %>
+      <tr>
+        <td><%= subject.name %></td>
+        <td>
+          <% if element %>
+            <% path = [ @owner, element ] %>
+            <%# path = owner_element_path(@owner, subject_id: subject) %>
+            <% path = owner_element_path(@owner, element) %>
+            <%= link_to 'Delete from list', path, method: :delete, data: { confirm: 'Are you sure?' } %>
+          <% else %>
+            <% path = [ @owner, :elements, subject_id: subject ] %>
+            <%= link_to 'Add to list', path, method: :post, data: { confirm: 'Are you sure?' } %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'List', in_order.lists_path(list: { owner_id: @owner, owner_type: 'Owner' }) %>
+<br>
+<%= link_to 'Owners', owners_path %>
+<br>
+<%= link_to 'New Subject', new_subject_path %>
+
