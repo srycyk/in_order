@@ -18,3 +18,42 @@ if ActiveSupport::TestCase.respond_to?(:fixture_path=)
   ActiveSupport::TestCase.file_fixture_path = ActiveSupport::TestCase.fixture_path + "/files"
   ActiveSupport::TestCase.fixtures :all
 end
+
+# Minitest
+
+require 'rails/test_help'
+require 'active_support/testing/assertions'
+require 'action_controller/test_case'
+
+require 'minitest/autorun'
+
+# Cleaner
+
+require 'database_cleaner'
+
+DatabaseCleaner.clean_with :truncation
+DatabaseCleaner.strategy = :transaction
+
+=begin
+class ActiveSupport::TestCase
+  setup { DatabaseCleaner.start }
+
+  teardown { DatabaseCleaner.clean }
+end
+=end
+
+class MiniTest::Spec
+  before :each do
+    DatabaseCleaner.start
+  end
+
+  after :each do
+    DatabaseCleaner.clean
+  end
+end
+
+# Fixtures
+
+require_relative 'fixtures/in_order/setup_elements'
+require_relative 'fixtures/in_order/models_functions'
+require_relative 'fixtures/in_order/controller_functions'

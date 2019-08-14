@@ -9,7 +9,8 @@ test/dummy/yarn-error.log
 test/dummy/storage/
 test/dummy/tmp/
 
+test/dummy/.rake_tasks~
+
 *.swp
 .ruby-gemset
 .ruby-version
-
