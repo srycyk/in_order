@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     in_order (0.1.0)
-      rails (~> 5.2.3)
+      rails
 
 GEM
   remote: https://rubygems.org/

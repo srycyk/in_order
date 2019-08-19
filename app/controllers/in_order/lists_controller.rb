@@ -1,7 +1,7 @@
 
 module InOrder
-  class ListsController < ApplicationController
-    include Concerns::GeneralMixins
+  class ListsController < ::ApplicationController
+    include Concerns::ResponseHelpers
 
     def index
       @elements = InOrder::Fetch.new(keys).elements
@@ -10,7 +10,7 @@ module InOrder
     end
 
     def create
-      @elements = InOrder::Create.new(keys).(find_records)
+      @elements = InOrder::Create.new(keys).(record_keys)
 
       respond_to_list http_status(:created)
     end
@@ -32,9 +32,9 @@ module InOrder
     def add
       update = InOrder::Update.new(keys)
 
-      @elements = update.(find_records,
-                          append: append_to_existing_list?,
-                          uniq: uniq?, max: max)
+      @elements = update.(record_keys, append: append_to_existing_list?,
+                                       uniq: uniq?,
+                                       max: max)
 
       respond_to_list http_status
     end
@@ -44,8 +44,7 @@ module InOrder
     def append_to_existing_list?
       param = list_params[:position]
 
-      #param.blank? or param =~ /after/i
-      param.blank? || param =~ /after/i ? true : false
+      param.blank? or param =~ /(after|last)/i ? true : false
     end
 
     def max
@@ -59,8 +58,8 @@ module InOrder
       uniq != false and (uniq.blank? or FALSITIES.exclude?(uniq.strip))
     end
 
-    def delete_by_keys(delete_keys)
-      InOrder::Element.delete_elements delete_keys
+    def record_keys
+      list_params[:record_keys]
     end
 
     def list_params
@@ -73,13 +72,14 @@ module InOrder
         record_keys: [] ] # records to attach
     end
 
-    def record_keys
-      list_params[:record_keys]
+    def keys
+      owner = list_params.values_at :owner_type, :owner_id
+
+      InOrder::Aux::Keys.new(owner, list_params[:scope])
     end
 
-    def record_key
-      #[ list_params[:type], params[:id] ].compact
-      super list_params
+    def delete_by_keys(deletion_keys)
+      InOrder::Element.delete_elements deletion_keys
     end
   end
 end

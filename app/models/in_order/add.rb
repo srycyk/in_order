@@ -4,6 +4,7 @@ module InOrder
   # Identified (i.e. keyed) by an Owner and/or Scope.
   class Add
     include Aux::VarKeys
+    include Aux::CreateElement
 
     # +model+ is an ActiveRecord model to be linked
     def call(model, at: :bottom)
@@ -24,15 +25,8 @@ module InOrder
       marker = block_given? ? yield(iterator, model, adjacency, marker) : marker
 
       InOrder::Element.transaction do
-        Insert.new(element(model), marker, adjacency).call
+        Insert.new(create_element(model, keys), marker, adjacency).call
       end
-    end
-
-    def element(model)
-      poly_key = Aux::PolyKey.new(model, name: :subject)
-
-      InOrder::Element.create(keys.(poly_key.to_params))
-      #InOrder::Element.create(**keys.(subject: model))
     end
 
     private

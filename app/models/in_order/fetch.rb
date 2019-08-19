@@ -14,6 +14,10 @@ module InOrder
       sort_elements fetch
     end
 
+    def fetch
+      InOrder::Element.fetch_with_key(keys).to_a
+    end
+
     def repair
       InOrder::Element.transaction do
         fetch.each do |element|
@@ -23,10 +27,6 @@ module InOrder
         end
       end
       self
-    end
-
-    def fetch
-      InOrder::Element.fetch_with_key(keys).to_a
     end
   end
 end

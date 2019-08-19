@@ -13,6 +13,7 @@ module InOrder
   # in which case, they'll be prepended.
   class Create
     include Aux::VarKeys
+    include Aux::CreateElement
 
     # +models+ are an Araay of ActiveRecord models to be linked
     def call(models, append: true)
@@ -23,7 +24,7 @@ module InOrder
           previous_first_element = InOrder::Element.first_element(keys)
         end
 
-        create_elements(models.dup).tap do |created_elements|
+        add_elements(models.dup).tap do |created_elements|
           if created_elements.any?
             if previous_first_element
               InOrder::Element.link_elements created_elements.last,
@@ -45,13 +46,11 @@ module InOrder
 
     protected
 
-    def create_elements(models, created=[], element_id=nil)
-      if record = models.pop
-        atts = keys.(subject: record, element_id: element_id)
+    def add_elements(models, created=[], element_id=nil)
+      if record = models&.pop
+        element = create_element(record, keys, element_id)
 
-        element = InOrder::Element.create(atts)
-
-        create_elements models, created, element.id
+        add_elements models, created, element.id
 
         created << element
       else

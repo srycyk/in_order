@@ -2,6 +2,9 @@
 module InOrder
   # Puts a new element anywhere in a pre-exising list.
   class Insert < Aux::PositionBase
+    extend Aux::CreateElement
+    extend Aux::GetElement
+
     def call
       InOrder::Element.transaction do
         if marker
@@ -21,8 +24,16 @@ module InOrder
       end
     end
 
-    def self.call(record, marker, adjacency)
-      element = Add.new(marker.to_keys).element(record)
+    def self.call(record, marker, adjacency, keys: nil)
+      keys = InOrder::Aux::Keys.new(*keys) if Array === keys
+
+      unless ActiveRecord::Base === record
+        record = InOrder::Aux::PolyFind.new(record).call
+      end
+
+      marker = get_element(marker)
+
+      element = create_element(record, keys || marker.to_keys)
 
       new(element, marker, adjacency).call
     end

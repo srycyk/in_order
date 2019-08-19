@@ -1,14 +1,14 @@
 
 module InOrder
-  class ElementsController < ApplicationController
-    include Concerns::GeneralMixins
+  class ElementsController < ::ApplicationController
+    include Concerns::ResponseHelpers
 
     def create
-      marker = InOrder::Element.find(element_params[:marker_id])
+      marker_id, adjacency = element_params.values_at(:marker_id, :adjacency)
 
-      InOrder::Insert.call(find_record, marker, element_params[:adjacency])
+      InOrder::Insert.call(record_key, marker_id, adjacency)
 
-      respond_to_list #http_status(:created), true
+      respond_to_list http_status(:created), true
     end
 
     def update

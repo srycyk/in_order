@@ -179,7 +179,7 @@ module InOrder
         delete list_path(elements.first.id), options
       end
 
-      assert_equal '200',response.code
+      assert_equal '202',response.code
     end
 
     # Remove
@@ -193,14 +193,14 @@ module InOrder
         post remove_lists_path, options
       end
 
-      assert_equal '200', response.code
+      assert_equal '202', response.code
     end
 
     # Add
 
     PREPENDERS = %w(prepend before)
 
-    [ nil, 'after', PREPENDERS.sample ].each do |position|
+    [ nil, 'after', 'last', *PREPENDERS ].each do |position|
       test "add: new elements with #{position || :default_append}" do
         create_elements
 
